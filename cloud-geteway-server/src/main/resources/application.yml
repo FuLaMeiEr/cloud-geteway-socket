@@ -1,0 +1,12 @@
+server:
+  port: 8081
+
+
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: cloud-geteway-server
+          uri: lb:ws://clooud-geteway-server
+          predicates:
+            - path=/websocket/**

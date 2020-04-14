@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="cloud-geteway-server" />
+        <module name="cloud-eureka-server" />
+        <module name="cloud-websocket-sever" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="cloud-eureka-server" target="1.8" />
+      <module name="cloud-geteway-server" target="1.8" />
+      <module name="cloud-websocket-sever" target="1.8" />
+    </bytecodeTargetLevel>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="cloud-eureka-server" options="-parameters" />
+      <module name="cloud-geteway-server" options="-parameters" />
+      <module name="cloud-websocket-sever" options="-parameters" />
+    </option>
+  </component>
+</project>

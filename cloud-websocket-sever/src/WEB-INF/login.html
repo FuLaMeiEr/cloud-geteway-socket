@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en" style="height:100%">
+<head>
+    <meta charset="UTF-8">
+    <title>基于WebSocket的聊天室</title>
+</head>
+<body style="height:100%">
+登录名：<input type="text" id="username" placeholder="登录名">
+<input type="button" value="连接" id="login">
+<input type="button" value="断开" id="logout" onclick="closeWebSocket()">
+<div id="message_0">欢迎来到聊天室！</div>
+<div id="messages"></div>
+<div id="inputMessage" style="position:absolute;bottom:0">
+    To: <input type="text" id="toUsername" value="All" style="width:5em"/>
+    <input type="button" name="sendMessage" id="sendMessage" value="发送" onclick="sendMessage()">
+    <br>
+    <textarea name="message" id="message" cols="30" rows="10"></textarea>
+</div>
+</body>
+<script type="text/javascript">
+    // websocket对象
+    var websocket = null;
+
+    // 消息列表元素
+    var messages = document.getElementById("messages");
+
+    // 登陆按钮的事件
+    document.getElementById("login").addEventListener("click", function () {
+        var username = document.getElementById("username").value;
+        if (username == "") {
+            return false;
+        }
+        // 判断浏览器是否支持WebSocket
+        if (("WebSocket" in window)) {
+            websocket = new WebSocket("ws://" + document.location.host + "/websocket/" + username);
+
+            /*
+            * WebSocket连接成功事件
+            */
+            websocket.onopen = function () {
+                setInfoMessage("WebScoket连接成功。");
+            }
+
+            /*
+            * WebSocket接收到消息
+            */
+            websocket.onmessage = function (event) {
+                var div = document.createElement("div");
+                div.innerText = event.data;
+                messages.appendChild(div)
+            }
+
+            /*
+            * WebSocket断开连接事件
+            */
+            websocket.onclose = function () {
+                setInfoMessage("WebScoket连接关闭。");
+            }
+
+            /*
+            * WebSocket异常事件
+            */
+            websocket.onerror = function () {
+                setInfoMessage("WebSocket连接异常。")
+            }
+
+            /*
+            * 监听窗口离开事件，关闭websocket连接
+            */
+            window.onbeforeunload = function () {
+                closeWebSocket();
+            }
+        }
+        else {
+            setInfoMessage("当前浏览器不支持WebSocket！");
+        }
+    })
+
+    /*
+    * 向服务器发送消息
+    */
+    function sendMessage() {
+        if (websocket) {
+            // 获取消息内容
+            var messageContent = document.getElementById("message").value;
+            // 获取目标用户
+            var toUsername = document.getElementById("toUsername").value;
+            // 构建json格式的消息对象
+            var message = "{"
+                + "To:" + toUsername+ ","
+                + "Message: " + messageContent
+                + "}"
+            // 发送消息
+            websocket.send(message);
+        }
+        else {
+            setInfoMessage("WebSocket未连接。")
+        }
+    }
+
+    //关闭连接
+    function closeWebSocket() {
+        if (websocket) {
+            websocket.close();
+        }
+        else {
+            setInfoMessage("WebSocket未连接。")
+        }
+    }
+
+    function setInfoMessage(message) {
+        document.getElementById("message_0").innerText = message;
+    }
+
+</script>
+</html>
